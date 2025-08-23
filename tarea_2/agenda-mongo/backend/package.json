@@ -1,0 +1,14 @@
+{
+  "name": "agenda-typeorm",
+  "type": "module",
+  "scripts": { "dev": "node src/server.js" },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "joi": "^17.13.0",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.20"
+  }
+}
