@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Lista de Tareas</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:Arial;margin:20px;background:#f5f7fb}
+    .card{max-width:900px;margin:auto;background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}
+    a.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;color:#fff;background:#2563eb}
+    .small{font-size:.9rem;color:#6b7280}
+    .status{padding:6px 8px;border-radius:8px;color:#fff;font-weight:600}
+    .pending{background:#f59e0b}.in-progress{background:#06b6d4}.completed{background:#10b981}
+    .actions form{display:inline}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Tareas</h1>
+    <a class="btn" href="/tasks/new">+ Nueva tarea</a>
+    <% if (error) { %><p style="color:#b91c1c"><%= error %></p><% } %>
+
+    <table>
+      <thead>
+        <tr><th>Título</th><th>Descripción</th><th>Estado</th><th>Creación</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <% if (tasks.length === 0) { %>
+          <tr><td colspan="5">No hay tareas.</td></tr>
+        <% } %>
+        <% tasks.forEach(task => { %>
+          <tr>
+            <td><a href="/tasks/<%= task._id %>"><%= task.title %></a></td>
+            <td><%= task.description ? (task.description.length > 80 ? task.description.substring(0,80)+'...' : task.description) : '-' %></td>
+            <td><span class="status <%= task.status.replace(' ', '-') %> <%= task.status === 'pending' ? 'pending' : task.status === 'in-progress' ? 'in-progress' : 'completed' %>">
+              <%= task.status === 'pending' ? 'Pendiente' : task.status === 'in-progress' ? 'En progreso' : 'Completado' %>
+            </span></td>
+            <td class="small"><%= new Date(task.createdAt).toLocaleString() %></td>
+            <td class="actions">
+              <a href="/tasks/<%= task._id %>/edit">Editar</a>
+              <form method="POST" action="/tasks/<%= task._id %>/delete" style="display:inline" onsubmit="return confirm('Eliminar tarea?');">
+                <button type="submit" style="margin-left:8px">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

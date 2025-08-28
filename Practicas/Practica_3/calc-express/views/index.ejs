@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora (Node + Express)</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; background:#f6f7f9; margin:0; padding:2rem; }
+    .card { max-width: 420px; margin:auto; background:#fff; padding:1.25rem; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.07); }
+    h1 { font-size:1.25rem; margin:0 0 1rem; }
+    label { display:block; margin:.5rem 0 .25rem; font-weight:600; }
+    input, select, button {
+      width:100%; padding:.7rem .8rem; border:1px solid #dcdfe4; border-radius:12px; font-size:1rem;
+    }
+    button { margin-top:1rem; border:0; background:#111827; color:#fff; cursor:pointer; }
+    button:hover { opacity:.9; }
+    .result, .error { margin-top:1rem; padding:.8rem; border-radius:12px; }
+    .result { background:#ecfdf5; border:1px solid #a7f3d0; }
+    .error { background:#fef2f2; border:1px solid #fecaca; }
+    .hint { color:#6b7280; font-size:.9rem; margin-top:.5rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Calculadora Web (Servidor)</h1>
+
+    <form method="POST" action="/calcular">
+      <label for="operation">Operación</label>
+      <select id="operation" name="operation" required>
+        <option value="sumar" <%= form.operation === 'sumar' ? 'selected' : '' %>>Sumar</option>
+        <option value="restar" <%= form.operation === 'restar' ? 'selected' : '' %>>Restar</option>
+        <option value="multiplicar" <%= form.operation === 'multiplicar' ? 'selected' : '' %>>Multiplicar</option>
+        <option value="dividir" <%= form.operation === 'dividir' ? 'selected' : '' %>>Dividir</option>
+      </select>
+
+      <label for="a">Valor de A</label>
+      <input id="a" name="a" type="number" step="any" required value="<%= form.a %>" />
+
+      <label for="b">Valor de B</label>
+      <input id="b" name="b" type="number" step="any" required value="<%= form.b %>" />
+
+      <button type="submit">Calcular</button>
+      <p class="hint">La operación se ejecuta en el servidor con Node.js.</p>
+    </form>
+
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+    <% if (result !== null) { %>
+      <div class="result">Resultado: <strong><%= result %></strong></div>
+    <% } %>
+  </div>
+</body>
+</html>

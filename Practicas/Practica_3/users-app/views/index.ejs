@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lista de Usuarios</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; background:#f4f6f8; }
+    .container { max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,.06); }
+    table { width:100%; border-collapse: collapse; margin-top:10px; }
+    th, td { padding:10px; border-bottom:1px solid #eee; text-align:left; }
+    th { background:#fafafa; }
+    .actions form { display:inline; }
+    a.button, button { padding:8px 12px; border-radius:8px; border:0; cursor:pointer; text-decoration:none; }
+    a.button { background:#2563eb; color:#fff; }
+    button.delete { background:#ef4444; color:#fff; }
+    .error { background:#fff5f5; border:1px solid #fecaca; padding:10px; border-radius:8px; color:#991b1b; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Usuarios</h1>
+    <a class="button" href="/users/new">+ Agregar usuario</a>
+
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Correo Electrónico</th>
+          <th>Fecha de Registro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (users.length === 0) { %>
+          <tr><td colspan="5">No hay usuarios registrados.</td></tr>
+        <% } %>
+        <% users.forEach(function(user) { %>
+          <tr>
+            <td><%= user.id %></td>
+            <td><%= user.name %></td>
+            <td><%= user.email %></td>
+            <td><%= new Date(user.created_at).toLocaleString() %></td>
+            <td class="actions">
+              <form method="POST" action="/users/<%= user.id %>/delete" onsubmit="return confirm('Eliminar usuario?');">
+                <button type="submit" class="delete">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

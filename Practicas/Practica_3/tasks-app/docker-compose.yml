@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: tasks_mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017" # opcional: para conectar desde host
+
+  app:
+    build: .
+    container_name: tasks_app
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_URI: mongodb://mongo:27017/tasksdb
+      PORT: 8080
+    restart: unless-stopped
+    # mounts útiles en desarrollo (opcional):
+    # volumes:
+    #   - ./:/app
+    #   - /app/node_modules
+
+volumes:
+  mongo_data:

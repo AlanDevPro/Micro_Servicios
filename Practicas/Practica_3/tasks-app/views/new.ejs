@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Crear Tarea</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>body{font-family:Arial;margin:20px;background:#f5f7fb}.card{max-width:700px;margin:auto;background:#fff;padding:18px;border-radius:10px}</style>
+</head>
+<body>
+  <div class="card">
+    <h2>Nueva tarea</h2>
+    <a href="/">← Volver</a>
+    <% if (error) { %><p style="color:#b91c1c"><%= error %></p><% } %>
+
+    <form method="POST" action="/tasks">
+      <label>Título</label><br/>
+      <input name="title" required value="<%= form.title %>" style="width:100%;padding:8px;margin-bottom:8px" />
+      <label>Descripción</label><br/>
+      <textarea name="description" style="width:100%;padding:8px;margin-bottom:8px"><%= form.description %></textarea>
+      <label>Estado</label><br/>
+      <select name="status" style="padding:8px;margin-bottom:8px">
+        <option value="pending" <%= form.status === 'pending' ? 'selected' : '' %>>Pendiente</option>
+        <option value="in-progress" <%= form.status === 'in-progress' ? 'selected' : '' %>>En progreso</option>
+        <option value="completed" <%= form.status === 'completed' ? 'selected' : '' %>>Completado</option>
+      </select><br/>
+      <button type="submit">Crear</button>
+    </form>
+  </div>
+</body>
+</html>

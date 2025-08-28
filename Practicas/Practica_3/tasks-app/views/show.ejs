@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Ver Tarea</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>body{font-family:Arial;margin:20px;background:#f5f7fb}.card{max-width:700px;margin:auto;background:#fff;padding:18px;border-radius:10px}</style>
+</head>
+<body>
+  <div class="card">
+    <h2><%= task.title %></h2>
+    <p><strong>Descripción:</strong><br/><%= task.description || '-' %></p>
+    <p><strong>Estado:</strong> <%= task.status === 'pending' ? 'Pendiente' : task.status === 'in-progress' ? 'En progreso' : 'Completado' %></p>
+    <p><strong>Creado:</strong> <%= new Date(task.createdAt).toLocaleString() %></p>
+    <a href="/tasks/<%= task._id %>/edit">Editar</a> |
+    <a href="/">Volver</a>
+  </div>
+</body>
+</html>

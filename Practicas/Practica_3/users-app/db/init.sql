@@ -1,0 +1,10 @@
+-- script de inicialización (se ejecuta sólo la primera vez)
+CREATE DATABASE IF NOT EXISTS usersdb;
+USE usersdb;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
