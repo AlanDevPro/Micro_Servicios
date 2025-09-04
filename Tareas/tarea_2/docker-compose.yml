@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: agenda_mongo_db
+    restart: unless-stopped
+    ports:
+      - "27017:27017"   # opcional para conexión desde host
+    volumes:
+      - mongo_data:/data/db
+
+  agenda-mongo-backend:
+    build:
+      context: ./agenda-mongo/backend
+      dockerfile: Dockerfile
+    container_name: agenda_mongo_backend
+    env_file:
+      - ./agenda-mongo/backend/.env
+    depends_on:
+      - mongo
+    ports:
+      - "3001:3001"
+
+  agenda-mongo-frontend:
+    build:
+      context: ./agenda-mongo/front
+      dockerfile: Dockerfile
+    container_name: agenda_mongo_front
+    ports:
+      - "3000:80"
+
+  agenda-typeorm-backend:
+    build:
+      context: ./agenda-typeORM/backend
+      dockerfile: Dockerfile
+    container_name: agenda_typeorm_backend
+    env_file:
+      - ./agenda-typeORM/backend/.env
+    depends_on:
+      - mongo
+    ports:
+      - "3002:3002"
+
+  agenda-typeorm-frontend:
+    build:
+      context: ./agenda-typeORM/frontend
+      dockerfile: Dockerfile
+    container_name: agenda_typeorm_front
+    ports:
+      - "3003:80"
+
+volumes:
+  mongo_data:
