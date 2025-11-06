@@ -1,0 +1,25 @@
+type Envio {
+  id: ID!
+  usuario_id: Int!
+  vehiculo_id: String
+  origen: String!
+  destino: String!
+  fecha_envio: String
+  estado: String!
+}
+
+type Query {
+  envios: [Envio]
+}
+
+input EnvioInput {
+  usuario_id: Int!
+  vehiculo_id: String
+  origen: String!
+  destino: String!
+  fecha_envio: String
+}
+
+type Mutation {
+  crearEnvio(data: EnvioInput!): Envio
+}

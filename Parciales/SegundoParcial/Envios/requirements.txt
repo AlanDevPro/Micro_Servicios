@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+graphene
+mysql-connector-python
+sqlalchemy
+grpcio
+grpcio-tools
+python-dotenv

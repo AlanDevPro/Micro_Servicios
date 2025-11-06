@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  mysql_auth:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: empresa_logistica
+    volumes:
+      - mysql_auth_data:/var/lib/mysql
+    networks:
+      - logistica
+
+  mongodb:
+    image: mongo:6
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - logistica
+
+  auth-service:
+    build: ./Autenticacion
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mysql_auth
+    networks:
+      - logistica
+
+  vehiculos-service:
+    build: ./Vehiculos
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    networks:
+      - logistica
+
+networks:
+  logistica:
+
+volumes:
+  mysql_auth_data:
+  mongo_data:
