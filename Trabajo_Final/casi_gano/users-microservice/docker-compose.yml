@@ -1,0 +1,127 @@
+version: '3.8'
+
+services:
+  # ========================================
+  # MICROSERVICIO DE AUTENTICACIÓN
+  # ========================================
+  auth-service:
+    build: ./auth-microservice
+    container_name: auth-microservice
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo-auth:27017/auth_db
+      - JWT_SECRET=mi_clave_secreta_compartida_2024_produccion
+      - JWT_EXPIRE=24h
+      - JWT_REFRESH_SECRET=mi_clave_refresh_compartida_2024_produccion
+      - JWT_REFRESH_EXPIRE=7d
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
+    depends_on:
+      - mongo-auth
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mongo-auth:
+    image: mongo:7.0
+    container_name: mongodb-auth
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=auth_db
+    volumes:
+      - mongo-auth-data:/data/db
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/auth_db --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # MICROSERVICIO DE USUARIOS
+  # ========================================
+  users-service:
+    build: ./users-microservice
+    container_name: users-microservice
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo-users:27017/users_db
+      - JWT_SECRET=mi_clave_secreta_compartida_2024_produccion
+      - JWT_EXPIRE=24h
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080
+    depends_on:
+      - mongo-users
+      - auth-service
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mongo-users:
+    image: mongo:7.0
+    container_name: mongodb-users
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=users_db
+    volumes:
+      - mongo-users-data:/data/db
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/users_db --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ========================================
+  # PROXY REVERSO - NGINX
+  # ========================================
+  nginx-gateway:
+    image: nginx:alpine
+    container_name: api-gateway
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx-gateway.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-service
+      - users-service
+    networks:
+      - sports-betting-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  sports-betting-network:
+    driver: bridge
+    name: sports-betting-network
+
+volumes:
+  mongo-auth-data:
+    driver: local
+  mongo-users-data:
+    driver: local
