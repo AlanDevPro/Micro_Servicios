@@ -61,7 +61,17 @@ exports.register = async (req, res, next) => {
     }
 
     // Crear usuario
-    const user = await User.create({ name, email, password });
+    
+    //const user = await User.create({ name, email, password });
+    // Crear usuario (permitiendo especificar el rol manualmente)
+    const { role } = req.body;
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role: role === 'admin' ? 'admin' : 'user'
+    });
+
 
     // Generar tokens
     const token = generateToken(user._id);

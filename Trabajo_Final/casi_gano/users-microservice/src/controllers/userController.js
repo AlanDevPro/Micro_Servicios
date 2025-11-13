@@ -58,10 +58,11 @@ exports.createProfile = async (req, res, next) => {
       phoneNumber,
       country,
       dateOfBirth,
-      role: req.user?.role || 'user',
+      role: req.user?.role === 'admin' ? (req.body.role || 'user') : 'user',
       balance: 100, // Bono de bienvenida
       accountStatus: 'pending_verification'
     });
+
 
     res.status(201).json({
       success: true,
@@ -170,7 +171,7 @@ exports.updateProfile = async (req, res, next) => {
       'name', 'phoneNumber', 'country', 'address',
       'favoritesSports', 'favoriteLeagues', 'notificationsEnabled',
       'emailNotifications', 'smsNotifications', 'dailyBettingLimit',
-      'weeklyBettingLimit', 'monthlyBettingLimit'
+      'weeklyBettingLimit', 'monthlyBettingLimit', 'role'
     ];
 
     const updates = {};
